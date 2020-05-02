@@ -1,5 +1,10 @@
 ---
 title: "The Non-linear Spread of SARS-CoV-2"
+knit: (function(input_file, encoding) {
+  out_dir <- 'docs';
+  rmarkdown::render(input_file,
+ encoding=encoding,
+ output_file=file.path(dirname(input_file), out_dir, 'index.html'))})
 author: "Simon P. Castillo & Pablo A. Marquet"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
