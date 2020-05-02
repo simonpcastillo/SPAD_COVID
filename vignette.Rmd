@@ -39,7 +39,7 @@ A formal mathematical approach to tackle such open systems has been developed in
 
 \begin{equation}
 f(x) = \dfrac{\Gamma(\alpha + \beta)}{\Gamma(\alpha)\Gamma(\beta)}
-\#eq:betadistro
+(\#eq:betadistro)
 \end{equation}
 
 Where $\Gamma$ is the gamma function.
@@ -251,9 +251,9 @@ Interestingly, to that day, 48 out of the 169 countries found in the database (c
 The global scale data was obtained from an open repository maintained by the [Johns Hopkins University Center for Systems Science and Engineering](https://github.com/CSSEGISandData/COVID-19). These records allow estimating the CPAD daily since the 22nd of January of 2020 for 169 countries. Daily temporal slices correspond to metapopulation of focal systems (countries). The observable is the number of active SARS-Cov-2(+) cases divided by the total population of the respective country; we call this quantity coronavirus proportional abundance, and we analyse its distribution (CPAD). 
 For each CPAD corresponding to each time slice, we fit a standard beta distribution of the form
 
-\begin(equation)
+\begin{equation}
 f(x) = \dfrac{\Gamma(\alpha + \beta)}{\Gamma(\alpha)\Gamma(\beta)}
-\end(equation)
+\end{equation}
 
 Where $\Gamma$ is a gamma function and ($\alpha$ and $\beta$)  are the parameters of the beta distribution. The parameters were estimated via maximum likelihood implemented in R  (version 3.6.2) by the `fitdistrplus` package (version 1.0-14) with the Nelder-Mead optimisation algorithm [@delignette-muller_fitdistrplus_2015]. 
 The estimated parameters allow quantifying the expectancy of the proportional abundance and its variance for each time slice as
