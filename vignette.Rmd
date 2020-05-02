@@ -193,7 +193,7 @@ This function calculates and plots a single shift in the temporal evolution of t
 
 This function returns to your global environment an object list named `plotbetatraj` with the plot(s) created. Also, if `saveplot` is `TRUE`, a folder named `betaplots` in the folder `plots` is created in your `wd`. Also, this function returns a numeric object `dateshift` to your Global Environment, it is the estimated date of the single transition.
 
-```{r transition,warning=FALSE,fig.width = 5, fig.height = 9,fig.cap = "Detection of a single shifting point in the time series through the minimisiiton of the residual squared sum (RSS) for the estimated parameters (A-B). The analyses show the shift occurring the 28th of February (red segmented line). (C) The mean proportional abundance over time (log-scale) with the projected tipping point from (A-B)."}
+```{r transition,warning=FALSE,fig.width = 5, fig.height = 9,fig.cap = "Detection of a single shifting point in the time series through the minimisation of the residual squared sum (RSS) for the estimated parameters (A-B). The analyses show the shift occurring the 28th of February (red segmented line). (C) The mean proportional abundance over time (log-scale) with the projected tipping point from (A-B)."}
 
 analyseplot_shift(CPAD, saveplot=FALSE, saveplot.ext= ".png")
 
