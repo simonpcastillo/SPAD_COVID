@@ -18,7 +18,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 
-bibliography: "C:/users/tinyhp/Desktop/SPAD_COVID19/SPAD_COVID19/Rpkg/CPAD/bibliography/bibliography.bib"
+bibliography: "C:/Users/tinyhp/Documents/GithubRPkg/CPAD/bibliography.bib"
 biblio-style: "apalike"
 link-citations: true
 ---
@@ -229,7 +229,7 @@ This function plots the relations between global dynamic indicators of the total
 - `saveplots`: `TRUE` or `FALSE.` Save the plots in your wd. Default `TRUE.`
 - `saveplots.ext`: *character.* The extension for the saved figures admitted by ggsave (e.g., "`.png`", "`.svg`"). Default "`.png`".
 
-```{r relations1, warning=FALSE,fig.width = 8, fig.height = 4,fig.cap = "Associations between the estimated parameters and the epidemiological data. (A) The global number of active SARS-CoV-2(+) cases and the estimated parameter α and (B) the number of countries with active cases and β. Main plots show the log-transformed values of the estimated parameters, and each inset show the corresponding non-transformed estimates."}
+```{r relations1, warning=FALSE,fig.width = 8, fig.height = 8,fig.cap = "Associations between the estimated parameters and the epidemiological data. (A-B) The global number of active SARS-CoV-2(+) cases and the estimated parameters α and β; and (C-D) the number of countries with active cases as a function of α and β. Main plots show the log-transformed values of the estimated parameters, and each inset show the corresponding non-transformed estimates."}
 
 plot_relations(CPAD, saveplot=FALSE, saveplot.ext= ".png")
 
