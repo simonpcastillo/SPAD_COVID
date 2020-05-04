@@ -105,6 +105,26 @@ plot_trajectories(inc.df=inc_df, propab.df=propab_df, plot.inc=FALSE, plot.propa
 
 ```
 
+```{r histo, eval= FALSE, echo=FALSE,warning=FALSE,fig.width = 8, fig.height = 4,fig.cap = "Temporal dynamics of global proportional abundance of SARS-CoV-2 active cases."}
+pacman::p_load(ggplot2,lubridate, viridis, rlist, patchwork, gganimate)
+propab_df$datetext = format(propab_df$date, "%d %b")
+
+histo <- ggplot(propab_df, aes(propAb, fill= as.numeric(date), label = datetext)) +
+  geom_histogram(bins = 200) +
+  geom_text(aes(0.15, 400), size = 12, hjust = 0, color = "gray70") +
+  theme_minimal() +
+  guides(fill=FALSE) +
+  scale_y_log10()+
+  labs(x="Proportional abundance SARS-CoV-2(+)", y="count (log scale)")+
+  scale_fill_viridis_c()+
+  transition_time(date)+
+  enter_fade()+
+  exit_fade()
+
+animate(histo, nframes = length(unique(propab_df$Day)))
+
+
+```
 ### Analysing the coronavirus proportional abundance: `analyse_CPAD()` {-}
 
 This function analyses the coronavirus proportional abundance distribution (CPAD) and requires the following arguments:
