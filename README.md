@@ -7,7 +7,7 @@ Simon P Castillo ([spcastil@uc.cl](mailto:spcastil@uc.cl)) and Pablo A. Marquet 
 Departamento de Ecologia, Facultad de Ciencias Biologicas, Pontificia Universidad Catolica de Chile. <br>
 
 
-Maintainer: SImon P. Castillo ([spcastil@uc.cl](mailto:spcastil@uc.cl)) <br>
+Maintainer: Simon P. Castillo ([spcastil@uc.cl](mailto:spcastil@uc.cl)) <br>
 
 
 License: MIT
