@@ -262,7 +262,7 @@ The estimated parameters allow quantifying the expectancy of the proportional ab
 \end{equation}
 
 \begin{equation}
-{Var|prop ab|}^t=\dfrac{({\hat{\alpha}}_t {\hat{\beta}}_t)}{/((1+{\hat{\alpha}}_t+{\hat{\beta}}_t ) {({\hat{\alpha}}_t+{\hat{\beta}}_t )}^2 )}
+{Var|prop ab|}^t=\dfrac{({\hat{\alpha}}_t {\hat{\beta}}_t)}{(1+{\hat{\alpha}}_t+{\hat{\beta}}_t ) {({\hat{\alpha}}_t+{\hat{\beta}}_t )}^2 }
 \end{equation}
 
 
