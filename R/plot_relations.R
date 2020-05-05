@@ -30,7 +30,7 @@ plot_relations <- function(CPAD, saveplot=TRUE, saveplot.ext= ".png"){
   G = ggplot(df4, aes(log(beta),countries,colour=as.numeric(day))) +
     geom_point(aes(group = seq_along(day)), size=2)+
     #geom_path(size=1.5, alpha=0.3)+
-    labs(x= expression(paste("ln(",beta, ")")), y= expression("# Countries"), title= "D. ") +
+    labs(x= expression(paste("ln(",beta, ")")), y= expression("#Countries"), title= "D. ") +
     theme_minimal() +
     #scale_y_continuous(limits = c(-0.1,170), expand  = c(-0.1, NA))+
     #guides(colour=FALSE)+
@@ -54,8 +54,8 @@ plot_relations <- function(CPAD, saveplot=TRUE, saveplot.ext= ".png"){
     theme(axis.title=element_text(size=12,face="bold"))
 
 
-  FF2 = FF + annotation_custom(grob=ggplotGrob(FFinset),
-                               ymin = 1000000, ymax=2500000, xmin= sum(range(log(df4$alfa)))/2, xmax=Inf)
+  FF2 = FF
+  #+ annotation_custom(grob=ggplotGrob(FFinset),ymin = 1000000, ymax=2500000, xmin= sum(range(log(df4$alfa)))/2, xmax=Inf)
 
   Ginset=ggplot(df4, aes((beta),countries,colour=as.numeric(day))) +
     geom_path(size=1, colour="gray60")+
@@ -71,8 +71,8 @@ plot_relations <- function(CPAD, saveplot=TRUE, saveplot.ext= ".png"){
     theme(axis.title=element_text(size=12,face="bold"))
 
 
-  G2 = G + annotation_custom(grob=ggplotGrob(Ginset),
-                             ymin = 90, ymax=175, xmin= sum(range(log(df4$beta)))/2, xmax=Inf)
+  G2 = G
+  #+ annotation_custom(grob=ggplotGrob(Ginset), ymin = 90, ymax=175, xmin= sum(range(log(df4$beta)))/2, xmax=Inf)
 
 
 
@@ -118,8 +118,7 @@ plot_relations <- function(CPAD, saveplot=TRUE, saveplot.ext= ".png"){
     theme(axis.title=element_text(size=12,face="bold"))
 
 
-  HH2 = HH + annotation_custom(grob=ggplotGrob(HHinset),
-                               ymin = 90, ymax=170, xmin= sum(range(log(df4$alfa)))/2, xmax=Inf)
+  HH2 = HH #+ annotation_custom(grob=ggplotGrob(HHinset),ymin = 90, ymax=170, xmin= sum(range(log(df4$alfa)))/2, xmax=Inf)
 
   Iinset=ggplot(df4, aes((beta),NcasesPos,colour=as.numeric(day))) +
     geom_path(size=1, colour="gray60")+
@@ -135,8 +134,7 @@ plot_relations <- function(CPAD, saveplot=TRUE, saveplot.ext= ".png"){
     theme(axis.title=element_text(size=12,face="bold"))
 
 
-  I2 = I + annotation_custom(grob=ggplotGrob(Iinset),
-                             ymin = 1000000, ymax=2500000, xmin= sum(range(log(df4$beta)))/2, xmax=Inf)
+  I2 = I #+ annotation_custom(grob=ggplotGrob(Iinset), ymin = 1000000, ymax=2500000, xmin= sum(range(log(df4$beta)))/2, xmax=Inf)
 
 
   plotrelations <<- list.append(plotrelations, alphaSARS= FF2,

@@ -18,13 +18,13 @@
 
 load_globalCOVID <- function(){
 
-   pacman::p_load(reshape2,tidyverse, rgdal, RCurl)
+  pacman::p_load(reshape2,tidyverse, rgdal, RCurl)
 
   #'%ni%' <- Negate('%in%')
 
   # World shapefile
   #download.file(url="https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/50m/cultural/ne_50m_admin_0_countries.zip",
-   #             destfile = "data/ne_50m_admin_0_countries.zip")
+  #             destfile = "data/ne_50m_admin_0_countries.zip")
   #unzip(zipfile = "data/ne_50m_admin_0_countries.zip",exdir = "data" )
   #countries <- readOGR("data/ne_50m_admin_0_countries.shp",encoding = "utf-8",use_iconv = T, verbose = FALSE)
 
@@ -79,7 +79,8 @@ load_globalCOVID <- function(){
   for (i in 1:nrow(df0)) {
     popCountry = df0$Population[i]
     for(j in 3:(coles)){
-      df0[i,(coles+j-2)] = df0[i,j] / popCountry
+      sumDay = sum(df0[,j])
+      df0[i,(coles+j-2)] = df0[i,j] / sumDay#popCountry
 
     }
   }
@@ -98,8 +99,6 @@ load_globalCOVID <- function(){
   df2b = melt(df0b, id="Pays") # raw abundance
   names(df2b) = c("Country", "Day", "Incidence")
   df2b$date = as.Date(df2b$Day, "%m/%d/%y")
-
-  #breaksdate = seq(range(df2b$date)[1],range(df2b$date)[2], length.out = 5) #c(min(df2b$date),as.Date("2020-02-28"),as.Date("2020-02-29"),as.Date("2020-04-14"),max(df2b$date))#
 
   inc_matrix <<- df0b
   propab_matrix <<- df1

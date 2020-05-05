@@ -35,7 +35,7 @@ analyseplot_shift <- function(CPAD,saveplot=TRUE, saveplot.ext= ".png"){
       U.min.beta <- U[tau.est,2]
       U$date = df4$day[-length(df4$day)]
       date.est = U[U$tau==tau.est,]$date
-
+      dateshiftbeta <<- date.est
       t.test(y[1:tau.est],y[(tau.est+1):n],var.equal = T)
 
 
@@ -66,6 +66,7 @@ analyseplot_shift <- function(CPAD,saveplot=TRUE, saveplot.ext= ".png"){
       U.min.alfa <- U[tau.est,2]
       U$date = df4$day[-length(df4$day)]
       date.est = U[U$tau==tau.est,]$date
+      dateshiftalfa <<- date.est
 
       tau_alfa  = ggplot(U, aes(date, RSS, colour=as.numeric(date))) +
         geom_point(aes(group = seq_along(date)), size=2)+
@@ -89,7 +90,7 @@ analyseplot_shift <- function(CPAD,saveplot=TRUE, saveplot.ext= ".png"){
         theme_minimal() +
         guides(colour=FALSE)+
         theme(axis.title=element_text(size=12,face="bold"))+
-        geom_vline(xintercept = date.est, colour="red", size=1, lty=2)+
+        #geom_vline(xintercept = date.est, colour="red", size=1, lty=2)+
         scale_colour_viridis_c(breaks = as.numeric(breaksdate),
                                labels = paste0(day(breaksdate), "-", month(breaksdate, label = TRUE)),
                                name = "Day",
@@ -101,6 +102,5 @@ if(saveplot==TRUE){
   dir.create("plots/betaplots")
 ggsave(plot = tau_alfa/tau_beta/D,filename = paste("plots/betaplots/threshold", saveplot.ext), width = 12, height = 18, units = "cm")
 }
-dateshift <<- date.est
 
 }

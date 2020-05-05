@@ -29,6 +29,10 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 require(CPAD)
+require(treemapify)
+require(gganimate)
+require(gifski)
+require(plotly)
 ```
 ## Background: SARS-CoV-2 and open systems{-}
 
@@ -55,8 +59,6 @@ To automatise the data graphics and analyses, we developed a package called **CP
 The function `load_globalCOVID()` allows to access and consolidate the global data of active SARS-CoV-2 cases stored and updated by [Johns Hopkins University](https://github.com/CSSEGISandData/COVID-19).The function **does not** have arguments. 
 
 ```{r load, warning=FALSE}
-#List global environment
-ls()
 
 #Load data
 load_globalCOVID()
@@ -72,7 +74,7 @@ This function returns different objects to your Global Environment:
 - `data_positives`: *dataframe.* The number of SARS-CoV-2(+).
 - `data_recovered`: *dataframe.* The number of recovered from SARS-CoV-2(+).
 - `inc_matrix`: *dataframe.* The global active cases by country and day.
-- `propab_matrix`: *dataframe* The global active cases/country population by country and day.
+- `propab_matrix`: *dataframe* The country active cases/global active cases population by country and day.
 - `inc_df`: *dataframe*. A three column dataframe with country, date and the number of active cases.
 - `propab_df`: *dataframe*. A three column dataframe with country, date and the proportional abundance of active cases.
 - `sumCases`: *numeric vector*. The global sum of SARS-CoV-2(+) by day.
@@ -80,7 +82,7 @@ This function returns different objects to your Global Environment:
 
 ### Plot global trajectories: `plot_trajectories()` {-}
 
-This function plots the temporal tendencies in #SARS-CoV-2(+) and its proportional abundance each log-transformed data and insets with non-transformed data. This function have the following arguments:
+This function plots the temporal tendencies in #SARS-CoV-2(+) and its proportional abundance. This function have the following arguments:
 
 - `inc.df`:	*dataframe*. The incidence dataframe.
 - `propab.df`: *dataframe*. The proportional abundance dataframe.
@@ -91,17 +93,54 @@ This function plots the temporal tendencies in #SARS-CoV-2(+) and its proportion
 
 Then, for example, we can call the function
 
-```{r trajectories, warning=FALSE,fig.width = 8, fig.height = 4,fig.cap = "Temporal dynamics of global SARS-CoV-2 active cases. The main plot shows the log-transformed data while the inset shows the non-transformed dynamics.Colour in the main plot varies according to time."}
+```{r , eval=FALSE}
 #Only plots global incidence
-plot_trajectories(inc.df=inc_df, propab.df=propab_df, plot.inc=TRUE, plot.propab=FALSE, saveplots= FALSE, saveplots.ext= ".png")
+plot_trajectories(inc.df=inc_df, propab.df=propab_df, plot.inc=TRUE, plot.propab=FALSE, saveplots= TRUE, saveplots.ext= ".png")
 
 ```
 
+```{r trajectories,echo=FALSE, warning=FALSE,fig.width = 8, fig.height = 4,fig.cap = "Temporal dynamics of global SARS-CoV-2 active cases by country."}
+df2 <- inc_df
+ggplotly(ggplot(df2, aes(date, Incidence, colour=Country)) +
+     #geom_point(aes(group = seq_along(Day)), size=2)+
+     geom_path(size=0.5)+
+     labs(x= "", y= "#SARS-Cov-2(+)", title = "A.") +
+     theme_minimal() +
+     guides(colour=FALSE, group=FALSE)+
+     theme(plot.title=element_text(size=12,face="bold"))+
+     scale_colour_viridis_d())
+```
 This function returns to your global environment an object list named `plotTraj` storing the plot(s) created. Also, if `saveplots` is `TRUE`, a folder named `plots` is created in your `wd`. Alternatively, we can view the evolution of SARS-CoV-2 proportional abundance by setting `plot.propab=TRUE`.
 
-```{r trajectories2, warning=FALSE,fig.width = 8, fig.height = 4,fig.cap = "Temporal dynamics of global proportional abundance of SARS-CoV-2 active cases. The main plot shows the log-transformed data while the inset shows the non-transformed dynamics. Colour in the main plot varies according to time."}
+```{r , eval=FALSE,warning=FALSE,fig.width = 8, fig.height = 4,fig.cap = "Temporal dynamics of global proportional abundance of SARS-CoV-2 active cases by country."}
 #Only plots global proportional abundance
-plot_trajectories(inc.df=inc_df, propab.df=propab_df, plot.inc=FALSE, plot.propab=TRUE, saveplots= FALSE, saveplots.ext= ".png")
+plot_trajectories(inc.df=inc_df, propab.df=propab_df, plot.inc=FALSE, plot.propab=TRUE, saveplots= TRUE, saveplots.ext= ".png")
+```
+
+```{r trajectories2,echo=FALSE, warning=FALSE,fig.width = 8, fig.height = 4, echo=FALSE,fig.cap = "Temporal dynamics of global proportional abundance of SARS-CoV-2 active cases by country."}
+df2 <- propab_df
+ggplotly(ggplot(df2, aes(date, propAb,colour=Country)) +
+     #geom_point(aes(group = seq_along(Day)), size=2)+
+     geom_path(size=0.5)+
+     labs(x= "", y= "Prop abundance SARS-Cov-2(+)", title = "B.") +
+     theme_minimal() +
+     guides(colour=FALSE, group=FALSE)+
+     theme(plot.title=element_text(size=12,face="bold"))+
+     scale_colour_viridis_d())
+```
+
+To the `r format(Sys.time(), "%d of %b")`, the proportional abundance of each country may be represented as 
+
+```{r treemap, echo=FALSE, fig.cap="Proportional abundance distribution by country."}
+ggplot(propab_df[propab_df$date == max(propab_df$date),], aes(area = propAb, fill = Country)) +
+  geom_treemap() +
+ggtitle(format(Sys.time(), "%d of %b %Y")) +
+  #transition_reveal(date)+
+  geom_treemap_text(aes(label=Country))+
+  guides(fill=FALSE) +
+  scale_fill_viridis_d()
+
+#animate(com, nframes = length(unique(propab_df$Day))*2,renderer = gifski_renderer(loop = F))
 
 ```
 
@@ -133,7 +172,7 @@ This function analyses the coronavirus proportional abundance distribution (CPAD
 - `propab.df`: *dataframe*. The proportional abundance dataframe of three columns: `Country`, `Day`, and `propAb`.
 - `sumCases`:	*numeric vector*. The daily sum of active SARS-CoV-2 cases; its length must be equal that the temporal slices present in `propab.df`.
 - `avCases`: *numeric vector*. The daily average of active SARS-CoV-2 cases; its length must be equal that the temporal slices present in `propab.df`.
-- `saveplots`: `TRUE` or `FALSE.` Save plots related to the distributions in your `wd`. Default `TRUE`
+- `saveplots`: `TRUE` or `FALSE.` Save plots related to the distributions in your `wd`. Default `TRUE`.
 
 Then, for example, we can run
 ```{r analyseCPAD,warning=FALSE}
@@ -157,7 +196,7 @@ This function plots the temporal evolution of the estimated parameters of the be
 The, we can run
 ```{r betaTraj, warning=FALSE,fig.width = 8, fig.height = 4,fig.cap = "Temporal trajectory of the beta distribution estimates."}
 #This function only prints a static plot in your Plot Panel
-plot_betatraj(CPAD, saveplot=FALSE, saveplot.ext= ".png")
+plot_betatraj(CPAD, saveplot=TRUE, saveplot.ext= ".png")
 
 ```
 
@@ -167,17 +206,16 @@ This function return to your global environment an object list called `plotbetat
 This function plots the animated temporal evolution of the estimated parameters of beta distribution $\hat\alpha$ and $\hat\beta$. It receives the arguments:
 
 - `CPAD`:	*dataframe*. The dataframe returned by `analyse_CPAD`.
-- `logScale`:	`TRUE` or `FALSE`. Log-transformed estimates.Default `TRUE`.
 - `saveAnim`:	`TRUE` or `FALSE`. Save the animation.Default `FALSE`.
 
-This function returns to your Viewer panel the animated temporal evolution of $\hat\alpha$ and $\hat\beta$ . Also, if `saveAnim` is `TRUE`, a folder named `GIFs` is created in your `wd` with the animation in gif format.
+This function returns to your Viewer panel the animated temporal evolution of $\hat\alpha$ and $\hat\beta$ (log-scale) . Also, if `saveAnim` is `TRUE`, a folder named `GIFs` is created in your `wd` with the animation in gif format.
 
-```{animated, eval}
+```{r animated, eval=FALSE}
 
-plot_AnimatedBetaEst(CPAD, logScale=TRUE, saveAnim=FALSE)
+plot_AnimatedBetaEst(CPAD, saveAnim=FALSE)
 
 ```
-```{r animated2, echo=FALSE, warning=FALSE,fig.width = 10, fig.height = 10,fig.cap = "Temporal trajectory of the beta distribution estimates in motion."}
+```{r animated2, echo=FALSE, warning=FALSE,fig.width = 10, fig.height = 10,fig.cap = "Temporal trajectory of the beta distribution estimates in motion.", eval=FALSE}
   pacman::p_load(ggplot2,lubridate, viridis, rlist, patchwork, gganimate)
 
   df4 = CPAD
@@ -186,7 +224,7 @@ plot_AnimatedBetaEst(CPAD, logScale=TRUE, saveAnim=FALSE)
   space = ggplot(df4, aes(log(alfa), log(beta),colour=as.numeric(day),
                          label = datetext)) +
     geom_point(aes(group = seq_along(day)), size=2)+
-    geom_text(aes(-1, 8), size = 12, hjust = 0, color = "gray70") +
+    geom_text(aes(-2.2, 3.5), size = 12, hjust = 0, color = "gray70") +
     geom_path(size=1.5, alpha=0.3)+
     theme_minimal() +
     guides(colour=FALSE)+
@@ -213,12 +251,15 @@ This function calculates and plots a single shift in the temporal evolution of t
 
 This function returns to your global environment an object list named `plotbetatraj` with the plot(s) created. Also, if `saveplot` is `TRUE`, a folder named `betaplots` in the folder `plots` is created in your `wd`. Also, this function returns a numeric object `dateshift` to your Global Environment, it is the estimated date of the single transition.
 
-```{r transition,warning=FALSE,fig.width = 5, fig.height = 9,fig.cap = "Detection of a single shifting point in the time series through the minimisation of the residual squared sum (RSS) for the estimated parameters (A-B). The analyses show the shift occurring the 28th of February (red segmented line). (C) The mean proportional abundance over time (log-scale) with the projected tipping point from (A-B)."}
+```{r transition,warning=FALSE,fig.width = 5, fig.height = 9,fig.cap = "Detection of a single shifting point in the time series through the minimisation of the residual squared sum (RSS) for the estimated parameters (A-B). The analyses show the date when the shift occurred (red segmented line). (C) The mean proportional abundance over time (log-scale) with the projected shifting point from (A-B)."}
 
-analyseplot_shift(CPAD, saveplot=FALSE, saveplot.ext= ".png")
+analyseplot_shift(CPAD, saveplot=TRUE, saveplot.ext= ".png")
 
-#The estimated date when the shifing point occurred
-print(dateshift)
+#The estimated date when the shifing point in alpha occurred
+print(format(dateshiftalfa, "%d of %b"))
+
+#The estimated date when the shifing point in beta occurred
+print(format(dateshiftbeta, "%d of %b"))
 
 ```
 
@@ -231,12 +272,12 @@ This function plots the relations between global dynamic indicators of the total
 
 ```{r relations1, warning=FALSE,fig.width = 8, fig.height = 8,fig.cap = "Associations between the estimated parameters and the epidemiological data. (A-B) The global number of active SARS-CoV-2(+) cases and the estimated parameters α and β; and (C-D) the number of countries with active cases as a function of α and β. Main plots show the log-transformed values of the estimated parameters, and each inset show the corresponding non-transformed estimates."}
 
-plot_relations(CPAD, saveplot=FALSE, saveplot.ext= ".png")
+plot_relations(CPAD, saveplot=TRUE, saveplot.ext= ".png")
 
 ```
 
 This function returns to your global environment an object list named `plotrelations` with the plot(s) created. Also, if `saveplot` is `TRUE`, a folder named `betaplots` in the folder `plots` is created in your `wd`.
-
+<!--
 ### Visualise the relationship between the ratio of countries infected and E|prop abundance|: `plot_ratioCountries()` {-}
 This function plots the relations between the fraction of countries with active SARS-CoV-2 vs sum #SARS-CoV-2, E|#SARS-CoV-2|, and E|prop ab|.Its arguments are:
 
@@ -248,26 +289,32 @@ This function returns to your global environment an object list named `plotratio
 
 ```{r ratioCountries, warning=FALSE,fig.width = 5, fig.height = 9,fig.cap = "Relationship between the fraction of countries with at least one active case and (A) he mean proportional abundance, (B) the number of active SARS-CoV-2(+) cases, and (C) the mean number of active cases."}
 
-plot_ratioCountries(CPAD, saveplot=FALSE, saveplot.ext= ".png")
+plot_ratioCountries(CPAD, saveplot=TRUE, saveplot.ext= ".png")
 
 
 ```
+-->
 
 ## Findings and significance {-}
 
-We have found that the temporal dynamics of the active cases , starting in January 2020, follow a non-linear behaviour either studying the global number of infected people or the CPAD with some striking bursts by the end of January and the end of February (Figs. \@ref(fig:trajectories) and \@ref(fig:trajectories2)). After mid- April it is observed a decreasing in the number of active cases in some countries. It is a consistent pattern either for the number of SARS-Cov-2 (Fig. \@ref(fig:trajectories)) as for the proportional abundance of SARS-Cov-2 per country (Fig. \@ref(fig:trajectories2)).<br>
+We have found that the temporal dynamics of the active cases , starting in January 2020, follow a non-linear behaviour either studying the global number of infected people or the CPAD with some striking bursts by the end of January and the end of February (Figs. \@ref(fig:trajectories) and \@ref(fig:trajectories2)). After mid- April it is observed a decreasing in the number of active cases in some countries. It is a consistent pattern either for the number of SARS-Cov-2 (Fig. \@ref(fig:trajectories)) as for the proportional abundance of SARS-Cov-2 per country (Fig. \@ref(fig:trajectories2)); where, today most of the active cases are concentrated in the United States (Fig. \@ref(fig:treemap)).<br>
 
-From the beginning, the parameters decreasing trend. However, from the 14th of April the estimated parameters show a sustained increase (Figs. \@ref(fig:betaTraj)A-C and \@ref(fig:animated2)) with the consequent decrease in mean SARS-CoV-2(+) proportional abundance and its variance (Fig \@ref(fig:betaTraj)D-E). In detail, the statistical description of the dynamic enabled by the beta distribution fit on the CPAD shows that the evolution of the estimated parameters is non-linear and discontinuous (Fig. Fig \@ref(fig:betaTraj)). Particular dynamics show a sudden shift in the estimated parameters by the end of February (Fig. \@ref(fig:betaTraj)B-C), and the consequent modification of the mean SARS-CoV-2(+) proportional abundance and its variance (Fig \@ref(fig:betaTraj)D-E); respectively.<br>
+From the temporal dynamics of the parameters (Fig. \@ref(fig:betaTraj)) we can distinguish at least three phases. The first phase, from January to the end of February, when the  pandemic was mostly contained in China, with some increase in the number of active cases in Italy, South Korea, and Iran, which is reflected in a decrease in $\hat\alpha$ but an increase in $\hat\beta$ (Fig. \@ref(fig:trajectories2)). The second phase begins with a local minimum in the parameters during late February and early March after which there is sharp increase in the parameters reaching a maximum by mid March, this is consistent with the epemiological pattern where most of the countries started to increase the number of active cases (Fig. \@ref(fig:trajectories)) and so their proportional abundance (Fig. \@ref(fig:trajectories2)). Finally, the third phase started after the maximum was reached with a decreasing in both, $\hat\alpha$ and $\hat\beta$. The decrease in $\hat\alpha$ is explained by the higher concentration of cases in the United States(Figs.\@ref(fig:trajectories2), \@ref(fig:treemap)), while a ephemeral decrease in $\hat\beta$ is due to that some contries after mimimised their active cases.<br>
 
-The estimation of the single breakpoint shows that the transition occurred on the 28th of February (Fig \@ref(fig:transition)A-B), being consistent with a transition in the average proportional abundance (Fig \@ref(fig:transition)C).The shift in the estimated parameters is associated with a transition in the global number of active SARS-CoV-2 and the number of countries reporting active cases (Fig. \@ref(fig:relations1)). In particular, after the transition in $\hat{\alpha}$, the number of active cases explode (Fig \@ref(fig:relations1)A). A similar pattern observed for $\hat{\beta}$ and the number of countries with active cases (Fig. \@ref(fig:relations1)B).<br>
+The estimation of the single breakpoint through the dynamics of $\hat\alpha$ and $\hat\beta$ shows that the transition occurred on the `r format(dateshiftalfa, "%d of %b %Y")` for $hat\alpha$ and on the `r format(dateshiftbeta, "%d of %b %Y")` for $\hat\beta$ (Fig. \@ref(fig:transition)A-B). This may mean that during those dates occurred a transition characterised by an inflexion point in the epidemiological dynamics from being concentrated mostly in China, to the spread to other countries(Figs. \@ref(fig:trajectories), \@ref(fig:trajectories2) and \@ref(fig:transition)C).<br>
 
-Interestingly, to that day, 48 out of the 169 countries found in the database (ca.30%) have al least one active case (Fig. \@ref(fig:ratioCountries)). That percentage is consistent with reports showing that the percolation threshold of the plague, Yersinia pestis,  in a network model occurs at a  fraction of infected host about 0.3 [@davis_abundance_2008; @davis_predictive_2004]. And, as we show, at that fraction occurs the transition in the average proportional abundance of SAR-CoV-2(+) cases (Fig \@ref(fig:ratioCountries)A) which cannot be deduced without the consideration of spatial and discrete units (Fig. \@ref(fig:ratioCountries)B-C).
+The global number of active SARS-CoV-2 cases (Figs. \@ref(fig:relations1)A-B) shows clear non-linear dynamics in association with $\hat\alpha$ and $\hat\beta$. While, the number of countries reporting active cases have a non-linear associatin with $\hat\alpha$ and a clear linear association with $\hat\beta$ (Figs. \@ref(fig:relations1)C-D).  
+
+In particular, after the transition in $\hat{\alpha}$ the the `r format(dateshiftalfa, "%d of %b %Y")`, the number of active cases exploded (Fig \@ref(fig:relations1)A-B). While, in the case of the number of countries, a first smooth increase is associated with a decrease in $\hat\alpha$ during February, which later reaches a maximim in MArch; the association between the number of countries with active cases and $\hat\beta$ is, as expected, positive.<br>
+
+<!--
+Interestingly, to that day, 48 out of the 169 countries found in the database (ca.30%) have al least one active case (Fig. \@ref(fig:ratioCountries)). That percentage is consistent with reports showing that the percolation threshold of the plague, Yersinia pestis,  in a network model occurs at a  fraction of infected host about 0.3 [@davis_abundance_2008; @davis_predictive_2004]. And, as we show, at that fraction occurs the transition in the average proportional abundance of SAR-CoV-2(+) cases (Fig \@ref(fig:ratioCountries)A) which cannot be deduced without the consideration of spatial and discrete units (Fig. \@ref(fig:ratioCountries)B-C). -->
 
 ## Supplementary materials {-}
 
 ### Methods {-}
 
-The global scale data was obtained from an open repository maintained by the [Johns Hopkins University Center for Systems Science and Engineering](https://github.com/CSSEGISandData/COVID-19). These records allow estimating the CPAD daily since the 22nd of January of 2020 for 169 countries. Daily temporal slices correspond to metapopulation of focal systems (countries). The observable is the number of active SARS-Cov-2(+) cases divided by the total population of the respective country; we call this quantity coronavirus proportional abundance, and we analyse its distribution (CPAD). 
+The global scale data was obtained from an open repository maintained by the [Johns Hopkins University Center for Systems Science and Engineering](https://github.com/CSSEGISandData/COVID-19). These records allow estimating the CPAD daily since the 22nd of January of 2020 for 169 countries. Daily temporal slices correspond to metapopulation of focal systems (countries). The observable is a vector of the number of active SARS-Cov-2(+) cases divided by the global number of active cases; we call this quantity coronavirus proportional abundance, and we analyse its distribution (CPAD). 
 For each CPAD corresponding to each time slice, we fit a standard beta distribution of the form
 
 \begin{equation}
@@ -278,11 +325,11 @@ Where $\Gamma$ is a gamma function and ($\alpha$ and $\beta$)  are the parameter
 The estimated parameters allow quantifying the expectancy of the proportional abundance and its variance for each time slice as
 \begin{equation}
 
-{E|prop ab|}^t=  \dfrac{{\hat{\alpha}}_t}{({\hat{\alpha}}_t+{\hat{\beta}}_t )}
+{E|prop ab|}_t=  \dfrac{{\hat{\alpha}}_t}{({\hat{\alpha}}_t+{\hat{\beta}}_t )}
 \end{equation}
 
 \begin{equation}
-{Var|prop ab|}^t=\dfrac{({\hat{\alpha}}_t {\hat{\beta}}_t)}{(1+{\hat{\alpha}}_t+{\hat{\beta}}_t ) {({\hat{\alpha}}_t+{\hat{\beta}}_t )}^2 }
+{Var|prop ab|}_t=\dfrac{({\hat{\alpha}}_t {\hat{\beta}}_t)}{(1+{\hat{\alpha}}_t+{\hat{\beta}}_t ) {({\hat{\alpha}}_t+{\hat{\beta}}_t )}^2 }
 \end{equation}
 
 

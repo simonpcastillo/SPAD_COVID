@@ -26,31 +26,17 @@ plot_trajectories <- function(inc.df, propab.df, plot.inc=TRUE, plot.propab=TRUE
   if(saveplots==TRUE){dir.create("plots")}
 
   if(plot.inc==TRUE){
-  popMain  = ggplot(df2b, aes(date, log(Incidence),colour=as.numeric(date), group= Country)) +
+  popMain  = ggplot(df2b, aes(date, (Incidence),colour=Country, group= Country)) +
     #geom_point(aes(group = seq_along(Day)), size=2)+
     geom_path(size=0.5)+
-    scale_y_continuous(limits = c(0, 20))+
-    labs(x= "", y= expression("ln(#SARS-CoV-2(+))"), title = "A.") +
+    labs(x= "", y= expression("Number of SARS-Cov-2(+)"), title = "A.") +
     theme_minimal() +
     guides(colour=FALSE)+
     theme(plot.title=element_text(size=12,face="bold"))+
-    scale_colour_viridis_c(breaks = as.numeric(breaksdate),
-                           labels = paste0(day(breaksdate), "-", month(breaksdate, label = TRUE)),
-                           name = "Day",
-                           option = "plasma")
+    scale_colour_viridis_d()
 
-  popInset= ggplot(df2b, aes(date, (Incidence),colour=as.numeric(date), group= Country)) +
-    geom_path(size=0.6, colour="gray60")+
-    labs(x= "", y="" )+#expression("#SARS-CoV-2(+)")) +
-    theme_minimal() +
-    theme(rect = element_rect(fill = "transparent"),
-          axis.text.y = element_blank(),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank())+
-    guides(colour=FALSE)
-
-  Number_W  = popMain + annotation_custom(grob=ggplotGrob(popInset),
-                                          ymin = 10.4, ymax=20, xmin= -Inf, xmax=median(df2b$date))
+  Number_W  = popMain
+  #+ annotation_custom(grob=ggplotGrob(popInset),ymin = 10.4, ymax=20, xmin= -Inf, xmax=median(df2b$date))
 
   plotTraj <- list.append(plotTraj, incidence=Number_W)
   print(Number_W)
@@ -64,30 +50,20 @@ plot_trajectories <- function(inc.df, propab.df, plot.inc=TRUE, plot.propab=TRUE
   #---------------------------------------------------------------------------------
 
 if(plot.propab==TRUE){
-  popMain_p = ggplot(df2, aes(date, log(propAb),colour=as.numeric(date), group= Country)) +
+  popMain_p = ggplot(df2, aes(date, (propAb),colour=Country, group= Country)) +
     #geom_point(aes(group = seq_along(Day)), size=2)+
     geom_path(size=0.5)+
-    labs(x= "", y= expression("ln(Prop ab SARS-Cov-2(+))"), title = "B.") +
+    labs(x= "", y= expression("Prop abundance SARS-Cov-2(+)"), title = "B.") +
     theme_minimal() +
     guides(colour=FALSE)+
     theme(plot.title=element_text(size=12,face="bold"))+
-    scale_colour_viridis_c(breaks = as.numeric(breaksdate),
-                           labels = paste0(day(breaksdate), "-", month(breaksdate, label = TRUE)),
-                           name = "Day",
-                           option = "plasma")
+    scale_colour_viridis_d()
+    #scale_colour_viridis_c(breaks = as.numeric(breaksdate),
+     #                      labels = paste0(day(breaksdate), "-", month(breaksdate, label = TRUE)),
+      #                     name = "Day",
+       #                    option = "plasma")
 
-  popInset_p= ggplot(df2, aes(date, (propAb), group= Country)) +
-    geom_path(size=0.6, colour="gray60")+
-    labs(x= "", y= "")+#expression("Prop ab SARS-CoV-2(+)")) +
-    theme_minimal() +
-    theme(rect = element_rect(fill = "transparent"),
-          axis.text.y = element_blank(),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank())+
-    guides(colour=FALSE)
-
-  Prp_W  = popMain_p + annotation_custom(grob=ggplotGrob(popInset_p),
-                                         ymin = -10, ymax=Inf, xmin= -Inf, xmax=median(df2b$date))
+  Prp_W  = popMain_p
 
 
   plotTraj <- list.append(plotTraj, propab=Prp_W)
