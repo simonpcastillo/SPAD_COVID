@@ -131,14 +131,19 @@ ggplotly(ggplot(df2, aes(date, propAb,colour=Country)) +
 
 To the `r format(Sys.time(), "%d of %b")`, the proportional abundance of each country may be represented as 
 
-```{r treemap, echo=FALSE, fig.cap="Proportional abundance distribution by country."}
-ggplot(propab_df[propab_df$date == max(propab_df$date),], aes(area = propAb, fill = Country)) +
-  geom_treemap() +
-ggtitle(format(Sys.time(), "%d of %b %Y")) +
-  #transition_reveal(date)+
-  geom_treemap_text(aes(label=Country))+
-  guides(fill=FALSE) +
-  scale_fill_viridis_d()
+```{r treemap, echo=FALSE,fig.width = 8, fig.height = 5, fig.cap="Country's fraction of active cases (proportional abundance). Countries whose proportional abundance of active cases is lower than 0.0001 are ommited from this figure."}
+p <- plot_ly(
+  propab_df[propab_df$date == max(propab_df$date),],
+  labels = ~ Country,
+  parents = NA,
+  values = ~ round(propAb,4),
+  type = 'treemap',
+  #color = ~ Country,
+  marker=list(colorscale='Cividis'),  
+  hovertemplate = "%{label}<br>Prop. Ab.: %{value}<extra></extra>"
+)
+p
+
 
 #animate(com, nframes = length(unique(propab_df$Day))*2,renderer = gifski_renderer(loop = F))
 
