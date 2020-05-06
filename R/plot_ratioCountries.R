@@ -14,10 +14,10 @@ plot_ratioCountries <- function(CPAD, saveplot=TRUE, saveplot.ext= ".png"){
   plotratioCountries <- list()
   df4 = CPAD
   breaksdate = seq(range(CPAD$day)[1],range(CPAD$day)[2], length.out = 5) #c(min(df2b$date),as.Date("2020-02-28"),as.Date("2020-02-29"),as.Date("2020-04-14"),max(df2b$date))#
-  H = ggplot(df4, aes(ratio_countries, log(MRcasesPos), colour=as.numeric(day))) +
+  H = ggplot(df4, aes(ratio_countries, (MRcasesPos), colour=as.numeric(day))) +
     geom_point(aes(group = seq_along(day)), size=2)+
     #geom_path(size=1.5, alpha=0.3)+
-    labs(x= expression("Ratio countries"), y= expression("ln(E|prop ab|)"), title = "A. ") +
+    labs(x= expression("Ratio countries"), y= expression("E|prop ab|"), title = "A. ") +
     theme_minimal() +
     guides(colour=FALSE)+
     theme(axis.title=element_text(size=12,face="bold"))+
@@ -26,10 +26,10 @@ plot_ratioCountries <- function(CPAD, saveplot=TRUE, saveplot.ext= ".png"){
                            name = "Day",
                            option = "plasma")
 
-  I = ggplot(df4, aes(ratio_countries, log(NcasesPos), colour=as.numeric(day))) +
+  I = ggplot(df4, aes(ratio_countries, (NcasesPos), colour=as.numeric(day))) +
     geom_point(aes(group = seq_along(day)), size=2)+
     #geom_path(size=1.5, alpha=0.3)+
-    labs(x= expression("Ratio countries"), y= expression("ln(#SARSCoV-2(+))"), title="B. ") +
+    labs(x= expression("Ratio countries"), y= expression("#SARSCoV-2(+)"), title="B. ") +
     theme_minimal() +
     #guides(colour=FALSE)+
     theme(axis.title=element_text(size=12,face="bold"))+
@@ -38,10 +38,10 @@ plot_ratioCountries <- function(CPAD, saveplot=TRUE, saveplot.ext= ".png"){
                            name = "Day",
                            option = "plasma")
 
-  J = ggplot(df4, aes(ratio_countries, log(McasesPos), colour=as.numeric(day))) +
+  J = ggplot(df4, aes(ratio_countries, (McasesPos), colour=as.numeric(day))) +
     geom_point(aes(group = seq_along(day)), size=2)+
     #geom_path(size=1.5, alpha=0.3)+
-    labs(x= expression("Ratio countries"), y= expression("ln(E|#SARSCoV-2(+)|)"), title = "C. ") +
+    labs(x= expression("Ratio countries"), y= expression("E|#SARSCoV-2(+)|"), title = "C. ") +
     theme_minimal() +
     guides(colour=FALSE)+
     theme(axis.title=element_text(size=12,face="bold"))+

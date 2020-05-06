@@ -15,10 +15,10 @@ plot_relations <- function(CPAD, saveplot=TRUE, saveplot.ext= ".png"){
   df4 = CPAD
   breaksdate = seq(range(CPAD$day)[1],range(CPAD$day)[2], length.out = 5) #c(min(df2b$date),as.Date("2020-02-28"),as.Date("2020-02-29"),as.Date("2020-04-14"),max(df2b$date))#
 
-   FF = ggplot(df4, aes(log(alfa), (NcasesPos),colour=as.numeric(day))) +
+   FF = ggplot(df4, aes((alfa), (NcasesPos),colour=as.numeric(day))) +
     geom_point(aes(group = seq_along(day)), size=2)+
     #geom_path(size=1.5, alpha=0.3)+
-    labs(x= expression(paste("ln(",alpha, ")")), y= expression("#SARS-CoV-2(+)"), title = "A. ") +
+    labs(x= expression(paste("",alpha, "")), y= expression("#SARS-CoV-2(+)"), title = "A. ") +
     theme_minimal() +
     #scale_y_continuous(limits = c(-10000,3000000), expand  = c(-10000, 3000000))+
     guides(colour=FALSE)+
@@ -27,10 +27,10 @@ plot_relations <- function(CPAD, saveplot=TRUE, saveplot.ext= ".png"){
                            labels = paste0(day(breaksdate), "-", month(breaksdate, label = TRUE)),
                            name = "Day",
                            option = "plasma")
-  G = ggplot(df4, aes(log(beta),countries,colour=as.numeric(day))) +
+  G = ggplot(df4, aes((beta),countries,colour=as.numeric(day))) +
     geom_point(aes(group = seq_along(day)), size=2)+
     #geom_path(size=1.5, alpha=0.3)+
-    labs(x= expression(paste("ln(",beta, ")")), y= expression("#Countries"), title= "D. ") +
+    labs(x= expression(paste("",beta, "")), y= expression("#Countries"), title= "D. ") +
     theme_minimal() +
     #scale_y_continuous(limits = c(-0.1,170), expand  = c(-0.1, NA))+
     #guides(colour=FALSE)+
@@ -78,10 +78,10 @@ plot_relations <- function(CPAD, saveplot=TRUE, saveplot.ext= ".png"){
 
   ###############
 
-  HH = ggplot(df4, aes(log(alfa), (countries),colour=as.numeric(day))) +
+  HH = ggplot(df4, aes((alfa), (countries),colour=as.numeric(day))) +
     geom_point(aes(group = seq_along(day)), size=2)+
     #geom_path(size=1.5, alpha=0.3)+
-    labs(x= expression(paste("ln(",alpha, ")")), y= expression("#Countries"), title = "C. ") +
+    labs(x= expression(paste("",alpha, "")), y= expression("#Countries"), title = "C. ") +
     theme_minimal() +
     #scale_y_continuous(limits = c(-10000,3000000), expand  = c(-10000, 3000000))+
     guides(colour=FALSE)+
@@ -91,10 +91,10 @@ plot_relations <- function(CPAD, saveplot=TRUE, saveplot.ext= ".png"){
                            name = "Day",
                            option = "plasma")
 
-  I = ggplot(df4, aes(log(beta),NcasesPos,colour=as.numeric(day))) +
+  I = ggplot(df4, aes((beta),NcasesPos,colour=as.numeric(day))) +
     geom_point(aes(group = seq_along(day)), size=2)+
     #geom_path(size=1.5, alpha=0.3)+
-    labs(x= expression(paste("ln(",beta, ")")), y= expression("#SARS-CoV-2(+) "), title= "B. ") +
+    labs(x= expression(paste("",beta, "")), y= expression("#SARS-CoV-2(+) "), title= "B. ") +
     theme_minimal() +
     #scale_y_continuous(limits = c(-0.1,170), expand  = c(-0.1, NA))+
     guides(colour=FALSE)+

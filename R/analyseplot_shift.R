@@ -83,10 +83,10 @@ analyseplot_shift <- function(CPAD,saveplot=TRUE, saveplot.ext= ".png"){
                                option = "plasma")
 
 
-      D=ggplot(df4, aes(day, log(E_beta), colour=as.numeric(day))) +
+      D=ggplot(df4, aes(day, (McasesPos), colour=as.numeric(day))) +
         geom_point(aes(group = seq_along(day)), size=2)+
         #geom_path(size=1.5, alpha=0.3)+
-        labs(x= "", y= expression("ln(E|prop ab|)"), title="C.") +
+        labs(x= "", y= expression("E|#SARSCoV-2(+)|"), title="D.") +
         theme_minimal() +
         guides(colour=FALSE)+
         theme(axis.title=element_text(size=12,face="bold"))+
@@ -95,8 +95,21 @@ analyseplot_shift <- function(CPAD,saveplot=TRUE, saveplot.ext= ".png"){
                                labels = paste0(day(breaksdate), "-", month(breaksdate, label = TRUE)),
                                name = "Day",
                                option = "plasma")
-plotShift <<- list.append(plotShift, alpha= tau_alfa, beta= tau_beta, ExpectancyPropAb= D )
-print(tau_alfa/tau_beta/D)
+
+      E=ggplot(df4, aes(day, (NcasesPos), colour=as.numeric(day))) +
+        geom_point(aes(group = seq_along(day)), size=2)+
+        #geom_path(size=1.5, alpha=0.3)+
+        labs(x= "", y= expression("#SARSCoV-2(+)"), title="C.") +
+        theme_minimal() +
+        guides(colour=FALSE)+
+        theme(axis.title=element_text(size=12,face="bold"))+
+        #geom_vline(xintercept = date.est, colour="red", size=1, lty=2)+
+        scale_colour_viridis_c(breaks = as.numeric(breaksdate),
+                               labels = paste0(day(breaksdate), "-", month(breaksdate, label = TRUE)),
+                               name = "Day",
+                               option = "plasma")
+plotShift <<- list.append(plotShift, alpha= tau_alfa, beta= tau_beta, Expectancymeansars= D,Expectancytotalsars= E  )
+print(tau_alfa/tau_beta/E/D)
 if(saveplot==TRUE){
   dir.create("plots")
   dir.create("plots/betaplots")

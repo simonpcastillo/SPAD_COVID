@@ -38,8 +38,8 @@ analyse_CPAD <-function(propab.matrix, propab.df, sumCases,avCases ,saveplots= T
   S= data.frame()
   mean_propAb= numeric()
 
-  #for (i in 1:length(dates)) {
-  foreach (i=1:length(dates)) %do% {
+  for (i in 1:length(dates)) {
+  #foreach (i=1:length(dates)) %do% {
    # print(paste0(round(i/length(dates)*100), "%"))
     #tryCatch({
     q = df1[,as.character(dates[i])]

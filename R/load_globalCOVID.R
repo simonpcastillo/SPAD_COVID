@@ -80,7 +80,7 @@ load_globalCOVID <- function(){
     popCountry = df0$Population[i]
     for(j in 3:(coles)){
       sumDay = sum(df0[,j])
-      df0[i,(coles+j-2)] = df0[i,j] / sumDay#popCountry
+      df0[i,(coles+j-2)] = df0[i,j]/sumDay
 
     }
   }
