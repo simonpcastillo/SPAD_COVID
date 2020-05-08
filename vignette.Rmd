@@ -95,7 +95,7 @@ Then, for example, we can call the function
 
 ```{r , eval=FALSE}
 #Only plots global incidence
-plot_trajectories(inc.df=inc_df, propab.df=propab_df, plot.inc=TRUE, plot.propab=FALSE, saveplots= TRUE, saveplots.ext= ".png")
+plot_trajectories(inc.df=inc_df, propab.df=propab_df, plot.inc=TRUE, plot.propab=FALSE, saveplots= TRUE, saveplots.ext= ".png", disease = "SARS-CoV-2")
 
 ```
 
@@ -114,7 +114,7 @@ This function returns to your global environment an object list named `plotTraj`
 
 ```{r , eval=FALSE,warning=FALSE,fig.width = 8, fig.height = 4,fig.cap = "Temporal dynamics of global proportional abundance of SARS-CoV-2 active cases by country."}
 #Only plots global proportional abundance
-plot_trajectories(inc.df=inc_df, propab.df=propab_df, plot.inc=FALSE, plot.propab=TRUE, saveplots= TRUE, saveplots.ext= ".png")
+plot_trajectories(inc.df=inc_df, propab.df=propab_df, plot.inc=FALSE, plot.propab=TRUE, saveplots= TRUE, saveplots.ext= ".png",disease = "SARS-CoV-2")
 ```
 
 ```{r trajectories2,echo=FALSE, warning=FALSE,fig.width = 8, fig.height = 4, echo=FALSE,fig.cap = "Temporal dynamics of global proportional abundance of SARS-CoV-2 active cases by country."}
@@ -201,7 +201,7 @@ This function plots the temporal evolution of the estimated parameters of the be
 The, we can run
 ```{r betaTraj, warning=FALSE,fig.width = 8, fig.height = 4,fig.cap = "Temporal trajectory of the beta distribution estimates."}
 #This function only prints a static plot in your Plot Panel
-plot_betatraj(CPAD, saveplot=TRUE, saveplot.ext= ".png")
+plot_betatraj(CPAD, saveplot=TRUE, saveplot.ext= ".png",disease = "SARS-CoV-2")
 
 ```
 
@@ -277,7 +277,7 @@ This function plots the relations between global dynamic indicators of the total
 
 ```{r relations1, warning=FALSE,fig.width = 8, fig.height = 8,fig.cap = "Associations between the estimated parameters and the epidemiological data. (A-B) The global number of active SARS-CoV-2(+) cases and the estimated parameters α and β; and (C-D) the number of countries with active cases as a function of α and β."}
 
-plot_relations(CPAD, saveplot=TRUE, saveplot.ext= ".png")
+plot_relations(CPAD, saveplot=TRUE, saveplot.ext= ".png", disease = "SARS-CoV-2")
 
 ```
 
@@ -294,7 +294,7 @@ This function returns to your global environment an object list named `plotratio
 
 ```{r ratioCountries, warning=FALSE,fig.width = 5, fig.height = 9,fig.cap = "Relationship between the fraction of countries with at least one active case and (A) he mean proportional abundance, (B) the number of active SARS-CoV-2(+) cases, and (C) the mean number of active cases."}
 
-plot_ratioCountries(CPAD, saveplot=TRUE, saveplot.ext= ".png")
+plot_ratioCountries(CPAD, saveplot=TRUE, saveplot.ext= ".png",disease = "SARS-CoV-2")
 
 
 ```
