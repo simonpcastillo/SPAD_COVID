@@ -30,7 +30,7 @@ knitr::opts_chunk$set(
 )
 require(CPAD)
 require(treemapify)
-require(gganimate)
+#require(gganimate)
 require(gifski)
 require(plotly)
 ```
@@ -52,11 +52,11 @@ For SARS-CoV-2, the estimated parameters of the beta distribution recapitulate t
 
 ## The CPAD R package {-}
 
-To automatise the data graphics and analyses, we developed a package called **CPAD**, after **C**oronavirus **P**roportional **A**bundance **D**istribution. This package constains eight functions that will help the user to download up-to-date open access data maintaned by [Johns Hopkins University](https://github.com/CSSEGISandData/COVID-19), analyse it, and plot it.Here, we will briefly overview each function, its arguments and outputs with the data obtained to the `r format(Sys.time(), "%d of %b %Y")`. 
+To automatise the data graphics and analyses, we developed a package called **CPAD**, after **C**oronavirus **P**roportional **A**bundance **D**istribution. This package contains eight functions (all of them available [here](https://github.com/simonpcastillo/SPAD_COVID19/tree/master/R))that will help the user to download up-to-date open access data maintaned by [Johns Hopkins University](https://github.com/CSSEGISandData/COVID-19), analyse it, and plot it.Here, we will briefly overview each function, its arguments and outputs with the data obtained to the `r format(Sys.time(), "%d of %b %Y")`. 
 
 ### Loading data: `load_globalCOVID()` {-}
 
-The function `load_globalCOVID()` allows to access and consolidate the global data of active SARS-CoV-2 cases stored and updated by [Johns Hopkins University](https://github.com/CSSEGISandData/COVID-19).The function **does not** have arguments. 
+The function `load_globalCOVID()` allows to access and consolidate the global data of active SARS-CoV-2 cases stored and updated by [Johns Hopkins University](https://github.com/CSSEGISandData/COVID-19). The function **does not** have arguments. And we defined active cases = postives - deaths - recovered.
 
 ```{r load, warning=FALSE}
 

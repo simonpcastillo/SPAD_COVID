@@ -30,7 +30,8 @@ load_globalCOVID <- function(){
 
   #save(countries, file="data/shapeFile.RData")
   load("data/shapeFile.RData")
-
+  source('R/dataCook.R')
+  
   # World population
   download.file(url = "https://raw.githubusercontent.com/DrFabach/Corona/master/pop.csv", destfile = "data/pop.csv")
   population<- read.csv2("data/pop.csv",stringsAsFactors = F)
