@@ -53,7 +53,7 @@ analyse_CPAD <-function(propab.matrix, propab.df, sumCases,avCases ,saveplots= T
     ad2=ad.test(q2, "plnorm", a2$estimate[1],a2$estimate[2])
     theta = optimal.theta(as.count(q2))
     ##
-    hq2=hist(q2)
+    hq2=hist(q2, plot=F)
     dq2 = hq2$density
     dq3=dbeta(x = hq2$mids, shape1 = a$estimate[1], shape2 = a$estimate[2])
     s=(cor.test(dq2, dq3))
