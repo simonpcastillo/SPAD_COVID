@@ -13,11 +13,12 @@
 #'
 #'
 #'
-analyseplot_shift <- function(CPAD,saveplot=TRUE, saveplot.ext= ".png"){
+analyseplot_shift <- function(CPAD,print.plot=TRUE, saveplot=TRUE, saveplot.ext= ".png"){
 
   pacman::p_load(ggplot2,lubridate, viridis, rlist, patchwork)
 
   plotShift <- list()
+  CPAD$day = as.Date(CPAD$day, "%m/%d/%y")
   df4 = CPAD
   breaksdate = seq(range(CPAD$day)[1],range(CPAD$day)[2], length.out = 5) #c(min(df2b$date),as.Date("2020-02-28"),as.Date("2020-02-29"),as.Date("2020-04-14"),max(df2b$date))#
   n = nrow(df4)
@@ -109,7 +110,10 @@ analyseplot_shift <- function(CPAD,saveplot=TRUE, saveplot.ext= ".png"){
                                name = "Day",
                                option = "plasma")
 plotShift <<- list.append(plotShift, alpha= tau_alfa, beta= tau_beta, Expectancymeansars= D,Expectancytotalsars= E  )
-print(tau_alfa/tau_beta/E/D)
+if(print.plot==TRUE){
+print(tau_alfa|tau_beta)
+}
+
 if(saveplot==TRUE){
   dir.create("plots")
   dir.create("plots/betaplots")

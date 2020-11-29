@@ -18,7 +18,7 @@
 
 load_globalCOVID <- function(){
 
-  pacman::p_load(reshape2,tidyverse, rgdal, RCurl)
+  pacman::p_load(reshape2,tidyverse, rgdal, RCurl, magrittr)
 
   #'%ni%' <- Negate('%in%')
 

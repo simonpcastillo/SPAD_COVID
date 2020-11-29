@@ -3,6 +3,7 @@
 #' @description This function plots the temporal tendencies in #SARS-CoV-2(+) and its proportional abundance each log-transformed data and insets with corresponding non-transformed data.
 #' @param inc.df: dataframe. The incidence dataframe.
 #' @param propab.df: dataframe. The proportional abundance dataframe.
+#' #' @param disease: *character*. Name of the disease. It will apply if the plots are saved.
 #' @param plot.inc: \code{TRUE} or \code{FALSE}. Plot incidence trajectory. Default \code{TRUE}.
 #' @param plot.propab: \code{TRUE} or \code{FALSE}. Plot proportional abundance trajectory. Default \code{TRUE}.
 #' @param saveplots: \code{TRUE} or \code{FALSE}. Save the plots in your \code{wd}.Default \code{TRUE}.
@@ -12,7 +13,7 @@
 #'
 #'
 #'
-plot_trajectories <- function(inc.df, propab.df, plot.inc=TRUE, plot.propab=TRUE, saveplots= TRUE, saveplots.ext= ".png"){
+plot_trajectories <- function(inc.df, propab.df, disease, plot.inc=TRUE, plot.propab=TRUE, saveplots= TRUE, saveplots.ext= ".png"){
 
   pacman::p_load(ggplot2,lubridate, viridis, rlist)
 
@@ -29,7 +30,7 @@ plot_trajectories <- function(inc.df, propab.df, plot.inc=TRUE, plot.propab=TRUE
   popMain  = ggplot(df2b, aes(date, (Incidence),colour=Country, group= Country)) +
     #geom_point(aes(group = seq_along(Day)), size=2)+
     geom_path(size=0.5)+
-    labs(x= "", y= expression("Number of SARS-Cov-2(+)"), title = "A.") +
+    labs(x= "", y= (paste0("Number of ",disease)), title = "A.") +
     theme_minimal() +
     guides(colour=FALSE)+
     theme(plot.title=element_text(size=12,face="bold"))+
@@ -42,7 +43,7 @@ plot_trajectories <- function(inc.df, propab.df, plot.inc=TRUE, plot.propab=TRUE
   print(Number_W)
 
   if(saveplots==TRUE){
-  ggsave(plot = Number_W, filename = paste0("plots/traj_incidence",saveplots.ext) , width = 20, height = 10, units = "cm")
+  ggsave(plot = Number_W, filename = paste0("plots/traj_incidence_", disease, saveplots.ext) , width = 20, height = 10, units = "cm")
   }
 }
   #---------------------------------------------------------------------------------
@@ -53,7 +54,7 @@ if(plot.propab==TRUE){
   popMain_p = ggplot(df2, aes(date, (propAb),colour=Country, group= Country)) +
     #geom_point(aes(group = seq_along(Day)), size=2)+
     geom_path(size=0.5)+
-    labs(x= "", y= expression("Prop abundance SARS-Cov-2(+)"), title = "B.") +
+    labs(x= "", y= (paste0("Prop abundance ", disease)), title = "B.") +
     theme_minimal() +
     guides(colour=FALSE)+
     theme(plot.title=element_text(size=12,face="bold"))+
@@ -70,8 +71,11 @@ if(plot.propab==TRUE){
   print(Prp_W)
 
   if(saveplots==TRUE){
-  ggsave(plot = Prp_W, filename = paste0("plots/traj_propAb",saveplots.ext) , width = 20, height = 10, units = "cm")
+  ggsave(plot = Prp_W, filename = paste0("plots/traj_propAb_",disease, saveplots.ext) , width = 20, height = 10, units = "cm")
   }
 }
-plotTraj <<- plotTraj
+
+  if(plot.inc==TRUE & plot.propab==TRUE & saveplots==TRUE){
+    ggsave(plot = Number_W/Prp_W, filename = paste0("plots/trajectories_",disease, saveplots.ext) , width = 20, height = 15, units = "cm")
+  }
 }#ElFin

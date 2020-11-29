@@ -13,7 +13,7 @@
 #'
 analyse_CPAD <-function(propab.matrix, propab.df, sumCases,avCases ,saveplots= TRUE){
 
-  pacman::p_load(ggplot2,lubridate, viridis, rlist, foreach, parallel, fitdistrplus, goftest)
+  pacman::p_load(ggplot2,lubridate, viridis, rlist, foreach, parallel, fitdistrplus, goftest, untb)
 
   if(length(as.character(unique(propab.df$Day))) != length(sumCases))stop("Need a sumCases vector of the same length of temporal slices present in propab.df")
   if(length(as.character(unique(propab.df$Day))) != length(avCases))stop("Need a avCases vector of the same length of temporal slices present in propab.df")
@@ -32,7 +32,7 @@ analyse_CPAD <-function(propab.matrix, propab.df, sumCases,avCases ,saveplots= T
   dates = unique(df2$Day)
   dates =as.character(unique(df2$Day))
 
-  dat = as.Date(dates, "%m/%d/%y")
+    dat = as.Date(dates, "%m/%d/%y")
   estimates = data.frame()
   PVAL=data.frame()
   S= data.frame()
@@ -41,7 +41,7 @@ analyse_CPAD <-function(propab.matrix, propab.df, sumCases,avCases ,saveplots= T
   for (i in 1:length(dates)) {
   #foreach (i=1:length(dates)) %do% {
    # print(paste0(round(i/length(dates)*100), "%"))
-    #tryCatch({
+    tryCatch({
     q = df1[,as.character(dates[i])]
     q2 = q[q>0]
     a = fitdist(q2, "beta", method="mle", optim.method = "Nelder-Mead")
@@ -51,10 +51,15 @@ analyse_CPAD <-function(propab.matrix, propab.df, sumCases,avCases ,saveplots= T
     ad=ad.test(q2, "pbeta", shape1 = a$estimate[1], shape2 = a$estimate[2])
     vm2=cvm.test(q2, "plnorm", a2$estimate[1],a2$estimate[2])
     ad2=ad.test(q2, "plnorm", a2$estimate[1],a2$estimate[2])
-    #ksbeta=ks.test(x, y)
-    #chibeta=chisq.test(x,y)
-    #pvaldf= data.frame(dates[i], kstest= ksbeta$p.value, chisq= chibeta$p.value, adtest=ad$p.value, vmtest= vm$p.value)
-    #PVAL= rbind(PVAL, pvaldf)
+    theta = optimal.theta(as.count(q2))
+    ##
+    hq2=hist(q2)
+    dq2 = hq2$density
+    dq3=dbeta(x = hq2$mids, shape1 = a$estimate[1], shape2 = a$estimate[2])
+    s=(cor.test(dq2, dq3))
+    s1 = data.frame(f= dates[i], cor= s$estimate,pval= s$p.value)
+    S= rbind(S, s1)
+    ##
     mean_propAb[i] = mean(q2)
     b1g <- bootdist(a, niter = 100)
     l= as.data.frame(summary(b1g)$CI)
@@ -68,12 +73,10 @@ analyse_CPAD <-function(propab.matrix, propab.df, sumCases,avCases ,saveplots= T
     l$pval_lnorm = c(vm2$p.value, ad2$p.value)
     l$param_lnorm = c("mulog", "sdlog")
     l$fitted_lnorm = c(a2$estimate[1], a2$estimate[2])
+    l$theta = rep(theta, 2)
     a = fitdist(q2, "beta", method="mle", optim.method = "Nelder-Mead")
 
-    bb2= pbeta((q2), shape1=a$estimate[1], shape2 = a$estimate[2])
-    s=(cor.test(sort(bb2),sort(q2)))
-    s1 = data.frame(f= dates[i], cor= s$estimate,pval= s$p.value)
-    S= rbind(S, s1)
+
 
     estimates = rbind(estimates, l)
 
@@ -105,7 +108,7 @@ analyse_CPAD <-function(propab.matrix, propab.df, sumCases,avCases ,saveplots= T
     dev.off()
     }
 
-    # }, error = function(e) paste("Error"))
+     }, error = function(e) paste("Error"))
   }
 
   #---------------------------------------------------------------------------------
@@ -115,9 +118,9 @@ analyse_CPAD <-function(propab.matrix, propab.df, sumCases,avCases ,saveplots= T
   df4 = data.frame(day = unique(estimates$days),
                    countries = estimates[estimates$param == "alpha",]$Countries,
                    ratio_countries = estimates[estimates$param == "alpha",]$Countries/max(estimates$Countries),
-                   NcasesPos= sumCases,
-                   McasesPos = avCases,
-                   MRcasesPos = mean_propAb,
+                   NcasesPos= sumCases[names(sumCases) %in% as.character(unique(estimates$days))],
+                   McasesPos = avCases[names(avCases) %in% as.character(unique(estimates$days))],
+                   #MRcasesPos = mean_propAb[names(mean_propAb) %in% unique(estimates$days)],
                    mu =  estimates[estimates$param_lnorm == "mulog",]$fitted_lnorm,
                    sd = estimates[estimates$param_lnorm == "sdlog",]$fitted_lnorm,
                    #mu_star =  exp(estimates[estimates$param_lnorm == "mulog",]$fitted_lnorm),
@@ -126,16 +129,17 @@ analyse_CPAD <-function(propab.matrix, propab.df, sumCases,avCases ,saveplots= T
                    #AD_lnorm = estimates[estimates$test_lnorm == "AD",]$pval_lnorm,
                    alfa =  estimates[estimates$param == "alpha",]$fitted,
                    beta= estimates[estimates$param == "beta",]$fitted,
+                   theta = estimates[estimates$param == "alpha",]$theta,
                    CvM_beta = estimates[estimates$test_beta == "CvM",]$pval_beta
                    #AD_beta = estimates[estimates$test_beta == "AD",]$pval_beta
   )
   df4$E_beta = df4$alfa/(df4$alfa+df4$beta)
   df4$V_beta = df4$alfa*df4$beta/((df4$alfa+df4$beta+1)*(df4$alfa+df4$beta)^2)
 
-  df4$day = as.Date(df4$day, "%m/%d/%y")
+  #df4$day = as.Date(df4$day)
   df4$pearson = S$cor
   df4$pearson_p = S$pval
-  df4$datetext = format(df4$day, "%d %b")
+  #df4$datetext = format(df4$day, "%d %b")
 
 
   CPAD <<- df4
