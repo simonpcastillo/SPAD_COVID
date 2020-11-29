@@ -254,7 +254,7 @@ This function calculates and plots a single shift in the temporal evolution of t
 - `saveplot`: `TRUE` or `FALSE`. Save the plots in your `wd`. Default `TRUE`.
 - `saveplot.ext`:	 *character*. The extension for the saved figures admitted by `ggplot::ggsave` (e.g., "`.png`", "`.svg`").Default "`.png`".
 
-This function returns to your global environment an object list named `plotbetatraj` with the plot(s) created. Also, if `saveplot` is `TRUE`, a folder named `betaplots` in the folder `plots` is created in your `wd`. Also, this function returns a numeric object `dateshift` to your Global Environment, it is the estimated date of the single transition.
+This function returns to your global environment an object list named `plotbetatraj` with the plot(s) created. Also, if `saveplot` is `TRUE`, a folder named `betaplots` in the folder `plots` is created in your `wd`. Also, this function returns a numeric object `dateshift` to your Global Environment, it is the estimated date of the single transition.
 
 ```{r transition,warning=FALSE,fig.width = 5, fig.height = 4,fig.cap = "Detection of a single shifting point in the time series through the minimisation of the residual squared sum (RSS) for the estimated parameters (A-B). The analyses show the date when the shift occurred (red segmented line). (C) The total number of active cases and (D) the average number of active cases over time."}
 
